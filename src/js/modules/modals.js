@@ -1,21 +1,48 @@
-const modals = () => {
+const modals = (state) => {
   function bindModal(
     triggerSelector,
     modalSelector,
     closeSelector,
-    closeClickOverlay = true
+    closeClickOverlay = true, // параметр для упарвление подложками с калякулятором
+    modalContent = false, // для модулей с калулятором для добваление подсказки
+    stateObj = false, // для проверки объекта на наличие данных
+    numberOfOption = null // указание на количиество данных
   ) {
-    const trigger = document.querySelectorAll(triggerSelector),
+    const trigger = document.querySelectorAll(triggerSelector), // определение триггеров
       modal = document.querySelector(modalSelector),
       close = document.querySelector(closeSelector),
       windows = document.querySelectorAll("[data-modal]");
 
     trigger.forEach((item) => {
+      // навещиваем триггеры
       item.addEventListener("click", (e) => {
         if (e.target) {
           e.preventDefault();
         }
 
+        if (stateObj && Object.keys(stateObj).length < numberOfOption) {
+          // если есть параметры stateObj проводим эту инструкцию
+          if (modalContent) {
+            let modalInner = document.querySelector(modalContent);
+            console.log(modalInner);
+
+            let message = document.querySelector(".inner-msg"); // что будет при превом испольнение этой инструкций?
+            if (message) message.remove();
+
+            message = document.createElement("div");
+            message.classList.add("inner-msg");
+            message.style.marginTop = "10px";
+            message.style.color = "red";
+            message.innerText = "Не выбраны все опций";
+            modalInner.appendChild(message);
+
+            setTimeout(() => {
+              message.remove();
+            }, 2000);
+          }
+
+          return;
+        }
         windows.forEach((item) => {
           item.style.display = "none";
         });
@@ -65,13 +92,19 @@ const modals = () => {
     ".popup_calc_button",
     ".popup_calc_profile",
     ".popup_calc_profile_close",
-    false
+    false,
+    ".popup_calc_content",
+    state,
+    4
   );
   bindModal(
     ".popup_calc_profile_button",
     ".popup_calc_end",
     ".popup_calc_end_close",
-    false
+    false,
+    ".popup_calc_profile_content",
+    state,
+    5
   );
   // showModalByTime(".popup", 3000);
 };

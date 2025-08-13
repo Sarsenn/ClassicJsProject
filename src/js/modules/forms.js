@@ -1,6 +1,6 @@
 import phoneInputs from "./phoneInputs";
 
-const forms = () => {
+const forms = (state) => {
   const form = document.querySelectorAll("form");
   const inputs = document.querySelectorAll("input");
 
@@ -42,6 +42,11 @@ const forms = () => {
       item.appendChild(gifLoading);
 
       const formData = new FormData(item);
+      if (item.getAttribute("data-calc") === "end") {
+        for (let key in state) {
+          formData.append(key, state[key]);
+        }
+      }
       postData("assets/server.php", formData)
         .then((res) => {
           console.log(res);

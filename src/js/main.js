@@ -3,13 +3,18 @@ import modals from "./modules/modals";
 import tabs from "./modules/tabs";
 import forms from "./modules/forms";
 import changeModalState from "./modules/changeModalState";
+import timer from "./modules/timer";
+import images from "./modules/images";
 
 window.addEventListener("DOMContentLoaded", () => {
   "use strict";
 
-  let modalState = {};
+  let modalState = {
+    type: "tree",
+  };
+  let deadLine = "2025-10-01";
   changeModalState(modalState);
-  modals();
+  modals(modalState);
   tabs(".glazing_slider", ".glazing_block", ".glazing_content", "active");
   tabs(
     ".decoration_slider",
@@ -17,7 +22,7 @@ window.addEventListener("DOMContentLoaded", () => {
     ".decoration_content > div > div",
     "after_click"
   );
-  forms();
+  forms(modalState);
   tabs(
     ".balcon_icons",
     ".balcon_icons_img",
@@ -25,4 +30,6 @@ window.addEventListener("DOMContentLoaded", () => {
     "do_image_more",
     "inline-block"
   );
+  timer(".container1", deadLine);
+  images();
 });

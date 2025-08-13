@@ -5,20 +5,35 @@ const changeModalState = (state) => {
     windowWidth = document.querySelectorAll("#width"),
     windowHeight = document.querySelectorAll("#height"),
     windowType = document.querySelectorAll("#view_type"),
-    windowProfile = document.querySelectorAll(".chekbox");
+    windowProfile = document.querySelectorAll(".checkbox");
 
   phoneInputs("#height"), phoneInputs("#width");
 
   function bindActionToElems(event, elem, prop) {
     elem.forEach((item, i) => {
       item.addEventListener(event, () => {
-        if (elem.length > 1) {
-          state[prop] = i;
-          console.log(state);
-        } else {
-          state[prop] = item.value;
-          console.log(state);
+        switch (item.nodeName) {
+          case "SPAN":
+            state[prop] = i;
+            break;
+          case "INPUT":
+            if (item.getAttribute("type") === "checkbox") {
+              i === 0 ? (state[prop] = "Холодное") : (state[prop] = "Тепло");
+              elem.forEach((box, j) => {
+                box.checked = false;
+                if (i == j) {
+                  box.checked = true;
+                }
+              });
+            } else {
+              state[prop] = item.value;
+            }
+            break;
+          case "SELECT":
+            state[prop] = item.value;
+            break;
         }
+
         console.log(state);
       });
     });
@@ -28,6 +43,7 @@ const changeModalState = (state) => {
   bindActionToElems("input", windowHeight, "height");
   bindActionToElems("input", windowWidth, "width");
   bindActionToElems("change", windowType, "type");
+  bindActionToElems("change", windowProfile, "profile");
 };
 
 export default changeModalState;
