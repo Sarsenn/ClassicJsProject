@@ -1,65 +1,63 @@
+import phoneInputs from "./phoneInputs";
+
 const forms = () => {
-	console.log('helloo')
-	const form = document.querySelectorAll('form'),
-		  input = document.querySelectorAll('input'),
-		  phoneInputs = document.querySelectorAll('input[name="user_phone"]');
-	
-	phoneInputs.forEach(item => {
-		item.addEventListener('input', () => {
-			item.value = item.value.replace(/\D/, '');
-		})
-	})
+  const form = document.querySelectorAll("form");
+  const inputs = document.querySelectorAll("input");
 
-	const message = {
-		loading: 'Загрузка...',
-		success: 'Спасибо! Скоро с вами свяжутся!',
-		failuer: 'Что-то пошло не так!...'
-	};	  
+  phoneInputs("input[name='user_phone']");
 
-	const postData = async (url, data) => {
-		document.querySelector('.status').innerHTML = message.loading;
+  const message = {
+    loading: "Загрузка..",
+    success: "Спасибо! Скоро мы с вами свяжемся",
+    failure: "Что-то пошло не так...",
+  };
 
-		let res = await fetch(url, {
-			method: 'POST',
-			body: data,
-		});
+  const postData = async (url, data) => {
+    document.querySelector(".status").textContent = message.loading;
+    document.querySelector(".gif-load").src = "./assets/loading.gif";
+    let res = await fetch(url, {
+      method: "POST",
+      body: data,
+    });
 
-		return await res.text();
-	}
+    return await res.text();
+  };
 
-	const clearInputs = () => {
-		input.forEach(item => {
-			item.value = '';
-		})
-	}
+  const clearInputs = () => {
+    inputs.forEach((item) => {
+      item.value = "";
+    });
+  };
 
-	form.forEach(item => {
-		item.addEventListener('submit', (e) => {
-			console.log('helloo')
-			e.preventDefault();
+  form.forEach((item) => {
+    item.addEventListener("submit", (e) => {
+      e.preventDefault();
 
-			let statusMessage = document.createElement('div');
-			statusMessage.classList.add('status');
-			item.appendChild(statusMessage);
+      let statusMessage = document.createElement("div");
+      let gifLoading = document.createElement("img");
+      gifLoading.classList.add("gif-load");
+      statusMessage.classList.add("status");
+      // console.log(gifLoading);
+      item.appendChild(statusMessage);
+      item.appendChild(gifLoading);
 
-			const formData = new FormData(item);
-
-			postData('assets/server.php', formData)
-				.then(res => {
-					console.log(res);
-					statusMessage.textContent = message.success;
-				})
-				.catch(() => {
-					statusMessage.textContent = message.failuer;
-				})
-				.finally(() => {
-					clearInputs();
-					setTimeout(()=> {
-						statusMessage.remove();
-					}, 5000);
-				})
-		});	
-	});
+      const formData = new FormData(item);
+      postData("assets/server.php", formData)
+        .then((res) => {
+          console.log(res);
+          statusMessage.textContent = message.success;
+        })
+        .catch(() => {
+          statusMessage.textContent = message.failure;
+        })
+        .finally(() => {
+          clearInputs();
+          setTimeout(() => {
+            statusMessage.remove();
+            gifLoading.remove();
+          }, 200);
+        });
+    });
+  });
 };
-
 export default forms;
